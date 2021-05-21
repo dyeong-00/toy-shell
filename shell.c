@@ -33,7 +33,7 @@ void shell_prompt()
   printf("\e[93m%s\x1b[0m in \e[94m%s\x1b[0m: ", uname, dname);
 }
 
-int builtin_commend(char *args[])
+int builtin_command(char *args[])
 {
   if (strcmp(args[0],"exit")==0)
   {
@@ -76,7 +76,7 @@ int main(void)
         }
 
         args[0] = command;
-        if (builtin_commend(args))
+        if (builtin_command(args))
           continue;
 
 //        printf("[%s]\n", command);
