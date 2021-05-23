@@ -28,4 +28,4 @@ set the **current working directory** to blue and print it next to username.
 * ### rm
 > Remove the file you entered after "rm".
 
-## 자동차it융합학과 20193346 선정수
+### 자동차it융합학과 20193346 선정수
