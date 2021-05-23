@@ -89,22 +89,23 @@ void welcome()
   time_t now;
   now = time(NULL);
   t = localtime(&now);
-
-  printf("\n -------------------------\n");
-  printf("|  welcome to sun shell!  |\n");
-  printf("|       %d.%02d.%02d.       |\n", t->tm_year+1900, t->tm_mon + 1, t->tm_mday);
-  printf(" -------------------------\n\n");
+  char uname[maxlen];
+  getlogin_r(uname, maxlen);
+  printf("\n -------------------------------------\n\n");
+  printf("        welcome, %s       \n", uname);
+  printf("        %d.%02d.%02d.        \n\n", t->tm_year+1900, t->tm_mon + 1, t->tm_mday);  //Today's date
+  printf(" -------------------------------------\n\n");
 }
 
 void shell_prompt()
 {
   char uname[maxlen], hname[maxlen], dname[maxlen];
 
-  getlogin_r(uname, maxlen);
-  gethostname(hname, maxlen);
-  getcwd(dname, maxlen);
+  getlogin_r(uname, maxlen);  //username
+  gethostname(hname, maxlen);  //hostname
+  getcwd(dname, maxlen);  //current working directory
 
-  printf("\e[93m%s@%s\x1b[0m in \e[94m%s\x1b[0m: ", uname, hname, dname);
+  printf("\e[93m%s@%s\x1b[0m in \e[94m%s\x1b[0m: ", uname, hname, dname);  //show it to the terminal
 }
 
 int builtin_command(char *args[])
@@ -128,7 +129,7 @@ int builtin_command(char *args[])
   if (!strcmp(temp, "pwd")) //pwd command
   {
     char wd[maxlen];
-    getcwd(wd, maxlen);
+    getcwd(wd, maxlen);  //current working directory
     printf("%s\n", wd);
     return 1;
   }
@@ -139,18 +140,18 @@ int builtin_command(char *args[])
 
     if (temp == NULL) //command without dir
     {
-      chdir(getenv("HOME"));
+      chdir(getenv("HOME"));  //change directory to HOME
       return 1;
     }
 
     else //command with dir
     {
-      if (chdir(temp)==-1)
+      if (chdir(temp)==-1)  //when the directory does not exist
       {
         fprintf(stderr, "failed to Change Directory\n");
         return 1;
       }
-      chdir(temp);
+      chdir(temp);  //when the directory exist
       return 1;
     }
   }
@@ -172,7 +173,7 @@ int builtin_command(char *args[])
       {
         while ((ent = readdir(dir)) != NULL)
         {
-          if (ent->d_name[0] == '.')
+          if (ent->d_name[0] == '.')  //ignore entries beginning with '.'
             continue;
           printf ("%s   ", ent->d_name);
         }
@@ -191,7 +192,7 @@ int builtin_command(char *args[])
       {
         while ((ent = readdir(dir)) != NULL)
         {
-          printf ("%s   ", ent->d_name);
+          printf ("%s   ", ent->d_name);  //does not ignore entries beginning with '.'
         }
         printf("\n");
         closedir(dir);
@@ -200,9 +201,22 @@ int builtin_command(char *args[])
     }
     else
     {
-      fprintf(stderr, "invalid option\n");
+      fprintf(stderr, "invalid option\n");  //when the option does not exist
       return 1;
     }
+  }
+
+  if (!strcmp(temp, "rm"))  //rm command
+  {
+    temp = strtok_r(NULL, delim, &args2);
+
+    if (remove(temp)<0)
+    {
+      fprintf(stderr, "failed to remove %s\n", temp);  //when the file does not exist
+      return 1;
+    }
+    remove(temp);  //when the file exist
+    return 1;
   }
   return 0;
 }

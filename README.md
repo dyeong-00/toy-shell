@@ -25,4 +25,5 @@ set the **current working directory** to blue and print it next to username.
 * ### ls
 > List directory contents.
 > If option "-a" is entered after "ls", it does not ignore entries beginning with '.'.
-
+* ### rm
+> Remove the file you entered after "rm".
